@@ -30,17 +30,19 @@ We are going through the following key steps:
 ### **Create EC2 free-tier instance**
 In order to create an EC2 instance, go to the EC2 service in your AWS Management Console and click Launch instance (orange button). You should choose **Amazon Linux 2 5.10 - 64-bit (x86)**.
 
-After choosing this machine, keep selecting options with "Free tier". At the step 6 (Configure Security Group), you should open the following ports:
+![Instances Dashboard](https://user-images.githubusercontent.com/22838513/148470698-3d8f1e86-4f25-455e-8aae-d3fe3b194459.png)
 
-(Image)
+After choosing this machine, keep selecting options with "Free tier". At the step 6 (Configure Security Group), you should **make sure that port 22 is open**.
 
 When you launch the instance, a dialogue asking about key pair opens up. **Create a new pair**, naming it whatever you want. I'm calling it "gra_admin". Download Key pair (.pem file) and save it somewhere you will remember.
 
+![Key Pair Pop Up](https://user-images.githubusercontent.com/22838513/148470907-45b0f638-f0b3-466e-810b-c931944c9ff8.png)
+
 Launch your instance. Now, AWS is doing the setup and should take a few minutes.
 
-After waiting for a few minutes, we will use the pem file we downloaded to SSH inside our AWS instance. Let's go back to our WSL2 (local development environment).
+![Instance running](https://user-images.githubusercontent.com/22838513/148471014-1c90a323-4cc3-4dcf-b95e-3107442d8029.png)
 
-In order to copy your pem file to the correct place, change the following terminal command to match your paths:
+We will use the pem file we downloaded to SSH inside our AWS instance. Let's go back to our WSL2 (local development environment). In order to copy your pem file to the correct place, change the following terminal command to match your paths:
 ```
 $ cp <path to downloaded pem file> ~/.ssh/
 ```
@@ -52,15 +54,14 @@ $ cp /mnt/c/Users/Vitor/Desktop/gra_admin.pem ~/.ssh/
 
 In my case, I have saved the file at my User's desktop (Windows) and I wanted to copy that file to WSL2 and follow the steps below that you may find when clicking "Connect" in the instance Dashboard.
 
-(Image)
+![SSH Steps](https://user-images.githubusercontent.com/22838513/148471106-b7cdf1d7-347f-428c-a43b-118c77169380.png)
 
 After going through all these steps you should see an EC2 icon after running the following command (Make sure to change the server as needed):
-
 ```
 $ ssh -i "gra_admin.pem" ec2-user@ec2-54-157-49-180.compute-1.amazonaws.com
 ```
-
-(Image) 
+If everything worked correctly, you may see the EC2 icon and your user/machine has changed:
+![EC2 Terminal](https://user-images.githubusercontent.com/22838513/148471148-1d03d090-2315-45c0-b627-a9397354dda0.png)
 
 ### **Install Spark**
 We are going to download Spark from its official website directly from the EC2's instance terminal. We are also downloading a version with Hadoop included but we are not going to use it. Hadoop is just a file system used to transfer and store data but we are using S3 for this specific purpose.
@@ -94,7 +95,7 @@ After installing, check if it is working by using the following command:
 $ java -version
 ```
 
-(Image)
+![java_-version](https://user-images.githubusercontent.com/22838513/148471677-91c9108b-1a59-4173-86cc-b2346f104763.png)
 
 ## Configure Spark node
 Although Spark is installed, we need to configure some paths and files so that it runs smoothly as a service in our EC2 machine. To achieve that, we will go through these steps:
@@ -118,9 +119,9 @@ PYSPARK_PYTHON
 
 Remember that ec2-user is the default user created by AWS and is written at the beginning of the console lines (Which is the user logged in currently):
 
-(Image)
+![ec2-user](https://user-images.githubusercontent.com/22838513/148471722-f27450e2-40a9-4230-98c4-98a0533dc8da.png)
 
- With these paths saved, run the following command:
+With these paths saved, run the following command:
 
 ```
 $ nano ~/.bashrc
@@ -143,7 +144,7 @@ After running ``` source ``` try this command to see if it worked (Shows the val
 $ echo $SPARK_HOME
 ```
 
-(Image)
+![echo_$SPARK_HOME](https://user-images.githubusercontent.com/22838513/148471749-390a8d6f-dfde-4e08-bb87-1f702208a102.png)
 
 ### **Check ```jars``` folder**
 One very important step is to make sure your jar folder contains all required jar files to run a Spark node. This step usually causes trouble as some files are missing from that folder. **It is fundamental to understand that all versions of the following jar files must be the same** [^3][^4].
