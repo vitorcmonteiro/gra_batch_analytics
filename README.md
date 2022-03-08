@@ -29,6 +29,7 @@ We are going through the following key steps:
 5. Install OpenJDK (Java)
 6. Configure Spark node
 
+
 ### **Create EC2 free-tier instance**
 In order to create an EC2 instance, go to the EC2 service in your AWS Management Console and click Launch instance (orange button). You should choose **Amazon Linux 2 5.10 - 64-bit (x86)**.
 
@@ -58,20 +59,22 @@ In my case, I have saved the file at my user's desktop (Windows) and I wanted to
 
 ![SSH Steps](https://user-images.githubusercontent.com/22838513/148471106-b7cdf1d7-347f-428c-a43b-118c77169380.png)
 
+
 ### **Configure ports**
 After creating the instance and saving your credentials to access your instance from your local desktop, we need to open the ports so we can connect to the server and to the spark instance we will create in the future.
 
 On the left menu go to the Network & Security section and you will find Security Groups.
 
-(image)
+![security_groups_1](https://user-images.githubusercontent.com/22838513/157165712-fceb550a-57ce-4b38-9512-d78eaddef4f3.png)
 
 Make sure you select the same security group attached to your instance and in actions you are able to edit Inbound Rules.
 
 Add the following:
 
-(image)
+![ports](https://user-images.githubusercontent.com/22838513/157165780-9c699b70-019c-43d0-ae77-be1141cc7da7.png)
 
 Save your editions and move to the next section.
+
 
 ### **Connect to SSH**
 
@@ -177,15 +180,15 @@ The main objective of changing this file is to **safely** store AWS credentials 
 
 Go to IAM service and create a new user:
 
-(image)
+![new user](https://user-images.githubusercontent.com/22838513/157165841-25877654-48ef-44f5-b405-f37425122413.png)
 
 Name it as you prefer but make sure to select "Access Key" as the AWS credential type. You may add that user to a group but since it it a small scale solution you can attach the security policy directly to that user:
 
-(image)
+![access](https://user-images.githubusercontent.com/22838513/157165887-bd173440-7b84-4e65-aa87-0432765ea41c.png)
 
 Add these permissions ```AmazonS3FullAccess``` and ```AmazonEC2FullAccess```. After advancing until the end, you will get a key pair, take note of them:
 
-(image)
+![key](https://user-images.githubusercontent.com/22838513/157165938-3b6ad68f-1287-4867-a056-def1f66edefd.png)
 
 Now refer back to your ```spark-defaults.conf``` file at the ```~/spark/conf``` folder:
 
@@ -244,17 +247,17 @@ To run the spark cluster you should type the following command:
 $ start-master.sh
 ```
 
-(image)
+![start-master](https://user-images.githubusercontent.com/22838513/157165969-bf801511-2635-4500-9556-979089e40dd1.png)
 
 To confirm the web UI port, grab the "logging to" part from the output and verify what is in the file:
 
-(image)
+![cat](https://user-images.githubusercontent.com/22838513/157166142-5b74ff07-55ce-436b-a94f-aa9023655b8c.png)
 
 You will be able to access through your browser using both ```Public IPv4 DNS``` or ```Public IPv4 address```. **Make sure you access them using only http instead of https and that the port 8080 is added at the end.**
 
 The next ip address needed is the ip from the spark master cluster. When you access the webpage below in the header you will find the ip address:
 
-(image)
+![spark master](https://user-images.githubusercontent.com/22838513/157165997-633dfd78-1c9f-41fa-b0dc-c51cfe4e870b.png)
 
 ```
 $ start-worker.sh spark://ip-172-31-30-209.ec2.internal:7077
@@ -262,7 +265,7 @@ $ start-worker.sh spark://ip-172-31-30-209.ec2.internal:7077
 
 Refresh the page and you will see now that there's one worker alive:
 
-(image)
+![worker](https://user-images.githubusercontent.com/22838513/157166017-bd0c3ed6-8297-42be-b3b8-8cb78f8b1585.png)
 
 You can always run a temporary spark cluster when using ```spark-submit.sh <python script>```. When you submit to a cluster you point to that server when running spark-submit.
 
